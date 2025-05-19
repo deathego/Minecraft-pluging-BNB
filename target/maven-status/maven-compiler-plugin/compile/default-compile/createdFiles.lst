@@ -1,0 +1,3 @@
+com\questengine\App.class
+com\questengine\MinecraftQuestPlugin.class
+com\questengine\QuestCommand.class

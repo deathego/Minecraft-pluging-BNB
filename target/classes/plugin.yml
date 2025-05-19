@@ -1,0 +1,11 @@
+name: MinecraftQuestPlugin
+version: 1.0
+main: com.questengine.MinecraftQuestPlugin
+api-version: 1.20
+description: A test plugin for Minecraft Quest Engine
+author: Nouman
+
+commands:
+  quest:
+    description: Starts or manages quests.
+    usage: /quest
