@@ -11,6 +11,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 import java.util.logging.Logger;
 
 public class QuestCommand implements CommandExecutor {
@@ -24,7 +26,7 @@ public class QuestCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        // 🔒 Check if the player already has an active quest
+        // Check if player already has an active quest
         if (QuestManager.hasActiveQuest(player.getUniqueId())) {
             player.sendMessage("§cYou already have an active quest! Complete it before taking a new one.");
             return true;
@@ -44,32 +46,42 @@ public class QuestCommand implements CommandExecutor {
                 logger.info("Raw response: " + response);
 
                 JSONParser parser = new JSONParser();
-                JSONObject quest = (JSONObject) parser.parse(response);
+                JSONObject questJson = (JSONObject) parser.parse(response);
 
-                String title = (String) quest.get("title");
-                String description = (String) quest.get("description");
+                String title = (String) questJson.get("title");
+                String description = (String) questJson.get("description");
+
+                Object objectiveObj = questJson.get("objective");
+                if (!(objectiveObj instanceof JSONArray)) {
+                    logger.warning("Objective is not an array: " + objectiveObj);
+                    Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () ->
+                            player.sendMessage("§cFailed to parse quest objectives.")
+                    );
+                    return;
+                }
+
+                JSONArray objectiveArray = (JSONArray) objectiveObj;
+                List<Objective> objectives = new java.util.ArrayList<>();
 
                 StringBuilder message = new StringBuilder();
                 message.append("§aQuest: §f").append(title).append("\n");
                 message.append("§7").append(description).append("\n§bObjectives:\n");
 
-                Object objectiveObj = quest.get("objective");
-                if (objectiveObj instanceof JSONArray) {
-                    JSONArray objectives = (JSONArray) objectiveObj;
-                    for (Object obj : objectives) {
-                        JSONObject objective = (JSONObject) obj;
-                        message.append(" - ").append(objective.get("type")).append(" ")
-                                .append(objective.get("amount")).append(" ")
-                                .append(objective.get("item")).append("\n");
-                    }
-                } else {
-                    logger.warning("Objective is not an array: " + objectiveObj);
+                for (Object obj : objectiveArray) {
+                    JSONObject o = (JSONObject) obj;
+                    String type = (String) o.get("type");
+                    String item = (String) o.get("item");
+                    int amount = ((Long) o.get("amount")).intValue();
+
+                    objectives.add(new Objective(type, item, amount));
+                    message.append(" - ").append(type).append(" ").append(amount).append(" ").append(item).append("\n");
                 }
+
+                Quest fullQuest = new Quest(title, description, objectives);
 
                 Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
                     player.sendMessage(message.toString());
-                    // ✅ Store the quest as active for this player
-                    QuestManager.setActiveQuest(player.getUniqueId(), title);
+                    QuestManager.setQuest(player.getUniqueId(), fullQuest);
                 });
 
             } catch (Exception e) {
