@@ -1,3 +1,5 @@
 com\questengine\App.class
 com\questengine\MinecraftQuestPlugin.class
 com\questengine\QuestCommand.class
+com\questengine\CompleteQuestCommand.class
+com\questengine\QuestManager.class

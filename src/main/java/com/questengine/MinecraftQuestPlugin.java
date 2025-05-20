@@ -8,6 +8,7 @@ public class MinecraftQuestPlugin extends JavaPlugin {
     public void onEnable() {
 
         this.getCommand("quest").setExecutor(new QuestCommand());
+        this.getCommand("completequest").setExecutor(new CompleteQuestCommand());
         getLogger().info("✅ Minecraft Quest Plugin Enabled!");
     }
 

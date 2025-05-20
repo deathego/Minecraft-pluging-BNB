@@ -73,7 +73,19 @@ try {
     console.error('OpenRouter error:', error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to generate quest' });
   }
+
 });
+
+// POST /submit-quest
+app.post('/submit-quest', (req, res) => {
+  const { playerName, questTitle, completedAt } = req.body;
+
+  console.log(`[✔] ${playerName} completed '${questTitle}' at ${completedAt}`);
+
+  // You can save this to a database later
+  res.status(200).json({ message: "Quest completion recorded." });
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });

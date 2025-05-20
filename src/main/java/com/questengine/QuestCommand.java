@@ -23,6 +23,13 @@ public class QuestCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+
+        // 🔒 Check if the player already has an active quest
+        if (QuestManager.hasActiveQuest(player.getUniqueId())) {
+            player.sendMessage("§cYou already have an active quest! Complete it before taking a new one.");
+            return true;
+        }
+
         player.sendMessage("§eGenerating a new quest...");
         Logger logger = Bukkit.getLogger();
 
@@ -34,7 +41,7 @@ public class QuestCommand implements CommandExecutor {
                         .returnContent()
                         .asString();
 
-                logger.info("Raw response: " + response); // Debug
+                logger.info("Raw response: " + response);
 
                 JSONParser parser = new JSONParser();
                 JSONObject quest = (JSONObject) parser.parse(response);
@@ -46,7 +53,7 @@ public class QuestCommand implements CommandExecutor {
                 message.append("§aQuest: §f").append(title).append("\n");
                 message.append("§7").append(description).append("\n§bObjectives:\n");
 
-                Object objectiveObj = quest.get("objective"); // ✅ corrected key
+                Object objectiveObj = quest.get("objective");
                 if (objectiveObj instanceof JSONArray) {
                     JSONArray objectives = (JSONArray) objectiveObj;
                     for (Object obj : objectives) {
@@ -59,9 +66,11 @@ public class QuestCommand implements CommandExecutor {
                     logger.warning("Objective is not an array: " + objectiveObj);
                 }
 
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () ->
-                        player.sendMessage(message.toString())
-                );
+                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
+                    player.sendMessage(message.toString());
+                    // ✅ Store the quest as active for this player
+                    QuestManager.setActiveQuest(player.getUniqueId(), title);
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
