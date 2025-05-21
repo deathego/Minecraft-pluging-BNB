@@ -34,7 +34,7 @@ Example:
   ]
 }
 
-Now generate a creative Real In-Game Minecraft quest.
+Now generate a creative Real In-Game Minecraft quest [collect 10 string and 10 white wool and 3 arrow].
 `;
 
     const response = await axios.post(

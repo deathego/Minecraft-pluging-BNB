@@ -1,28 +1,46 @@
 package com.questengine;
 
 public class Objective {
-    private String type;    // "collect" or "kill"
-    private String item;    // "COBBLESTONE" or "ZOMBIE"
-    private int amount;     // How many to collect/kill
-    private int progress;   // How many done so far
+    private String type;
+    private String item;
+    private int amount;
+    private int progress;
 
     public Objective(String type, String item, int amount) {
-        this.type = type.toLowerCase();   // e.g., "collect"
-        this.item = item.toUpperCase();   // e.g., "COBBLESTONE"
+        this.type = type.toLowerCase();
+        this.item = item.toUpperCase();
         this.amount = amount;
         this.progress = 0;
     }
 
     public String getType() { return type; }
-    public String getItem() { return item; }
+    public String getItem() { return item; } // Corrected
     public int getAmount() { return amount; }
     public int getProgress() { return progress; }
 
     public void incrementProgress() {
-        if (progress < amount) progress++;
+        if (progress < amount) {
+            progress++;
+        }
     }
 
     public boolean isComplete() {
         return progress >= amount;
+    }
+
+    // ✅ Fixed this method to use getItem() instead of getTarget()
+    public boolean matches(String actionType, String target) {
+        return this.getType().equalsIgnoreCase(actionType) &&
+               this.getItem().equalsIgnoreCase(target);
+    }
+
+    @Override
+    public String toString() {
+        return "Objective{" +
+                "type='" + type + '\'' +
+                ", item='" + item + '\'' +
+                ", amount=" + amount +
+                ", progress=" + progress +
+                '}';
     }
 }

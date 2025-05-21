@@ -79,11 +79,15 @@ public class QuestCommand implements CommandExecutor {
 
                 Quest fullQuest = new Quest(title, description, objectives);
 
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
-                    player.sendMessage(message.toString());
-                    QuestManager.setQuest(player.getUniqueId(), fullQuest);
-                });
+Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
+    player.sendMessage(message.toString());
 
+    // ✅ Save the full quest object
+    QuestManager.setQuest(player.getUniqueId(), fullQuest);
+
+    // ✅ Initialize objective progress
+    QuestManager.initializeProgress(player.getUniqueId(), objectives);
+});
             } catch (Exception e) {
                 e.printStackTrace();
                 Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () ->

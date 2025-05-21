@@ -4,13 +4,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MinecraftQuestPlugin extends JavaPlugin {
 
+    @Override
     public void onEnable() {
-    QuestManager.setup(getDataFolder());
+        // Initialize QuestManager
+        QuestManager.setup(getDataFolder());
 
-    this.getCommand("quest").setExecutor(new QuestCommand());
-    this.getCommand("completequest").setExecutor(new CompleteQuestCommand());
-    getLogger().info("✅ Minecraft Quest Plugin Enabled!");
-}
+        // Register commands
+        this.getCommand("quest").setExecutor(new QuestCommand());
+        this.getCommand("completequest").setExecutor(new CompleteQuestCommand());
+
+        // Register event listeners
+        getServer().getPluginManager().registerEvents(new QuestEventListener(), this);
+
+        getLogger().info("✅ Minecraft Quest Plugin Enabled!");
+    }
 
     @Override
     public void onDisable() {
