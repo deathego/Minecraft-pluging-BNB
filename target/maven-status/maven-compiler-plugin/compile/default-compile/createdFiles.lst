@@ -1,9 +1,11 @@
 com\questengine\QuestCommand.class
 com\questengine\QuestEventListener.class
 com\questengine\App.class
+com\questengine\BossBarManager$1.class
 com\questengine\Objective.class
 com\questengine\ObjectiveProgress.class
 com\questengine\Quest.class
+com\questengine\BossBarManager.class
 com\questengine\MinecraftQuestPlugin.class
 com\questengine\CompleteQuestCommand.class
 com\questengine\QuestManager.class

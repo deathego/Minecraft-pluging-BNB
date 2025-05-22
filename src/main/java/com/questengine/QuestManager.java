@@ -1,23 +1,23 @@
 package com.questengine;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
+import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Player;
+import java.util.concurrent.ConcurrentHashMap;
 public class QuestManager {
+    private static final Map<UUID, BossBar> activeBossBars = new ConcurrentHashMap<>();
     private static final Map<UUID, Quest> activeQuests = new HashMap<>();
     private static final Map<UUID, List<ObjectiveProgress>> progressMap = new HashMap<>();
     private static File file;
     private static YamlConfiguration data;
-
+    // Setup file and load existing data
     public static void setup(File dataFolder) {
         if (!dataFolder.exists()) {
-            dataFolder.mkdirs(); // Ensure plugin folder exists
+            dataFolder.mkdirs();
         }
-
         file = new File(dataFolder, "quests.yml");
         if (!file.exists()) {
             try {
@@ -26,37 +26,49 @@ public class QuestManager {
                 Bukkit.getLogger().warning("⚠ Could not create quests.yml");
             }
         }
-
         data = YamlConfiguration.loadConfiguration(file);
         loadFromFile();
     }
-
+    // Assign quest to player
     public static void setQuest(UUID playerId, Quest quest) {
-        activeQuests.put(playerId, quest);
-        initializeProgress(playerId, quest.getObjectives());
-        saveToFile();
+    // Remove existing boss bar if any
+    BossBar oldBar = activeBossBars.remove(playerId);
+    if (oldBar != null) {
+        Player player = Bukkit.getPlayer(playerId);
+        if (player != null) oldBar.removeAll();
     }
-
+    activeQuests.put(playerId, quest);
+    initializeProgress(playerId, quest.getObjectives());
+    saveToFile();
+}
+    // Retrieve active quest
     public static Quest getQuest(UUID playerId) {
         return activeQuests.get(playerId);
     }
-
     public static String getQuestTitle(UUID playerId) {
         Quest quest = activeQuests.get(playerId);
         return quest != null ? quest.getTitle() : null;
     }
-
     public static boolean hasActiveQuest(UUID playerId) {
         return activeQuests.containsKey(playerId);
     }
-
+    // Complete quest
     public static void completeQuest(UUID playerId) {
-        activeQuests.remove(playerId);
-        progressMap.remove(playerId);
-        data.set(playerId.toString(), null);
-        saveToFile();
+    // Remove boss bar if it exists
+    BossBar bossBar = activeBossBars.remove(playerId);
+    if (bossBar != null) {
+        Player player = Bukkit.getPlayer(playerId);
+        if (player != null) {
+            bossBar.removeAll();
+        }
     }
-
+    // Remove quest and progress
+    activeQuests.remove(playerId);
+    progressMap.remove(playerId);
+    data.set(playerId.toString(), null);
+    saveToFile();
+}
+    // Initialize progress
     public static void initializeProgress(UUID playerId, List<Objective> objectives) {
         List<ObjectiveProgress> progressList = new ArrayList<>();
         for (Objective obj : objectives) {
@@ -64,11 +76,11 @@ public class QuestManager {
         }
         progressMap.put(playerId, progressList);
     }
-
+    // Get player progress
     public static List<ObjectiveProgress> getProgress(UUID playerId) {
         return progressMap.getOrDefault(playerId, new ArrayList<>());
     }
-
+    // Increment progress
     public static void incrementProgress(UUID playerId, String type, String item) {
         List<ObjectiveProgress> list = progressMap.get(playerId);
         if (list == null) return;
@@ -80,10 +92,9 @@ public class QuestManager {
                 break;
             }
         }
-
         saveToFile();
     }
-
+    // Check completion
     public static boolean isQuestComplete(UUID playerId) {
         List<ObjectiveProgress> list = progressMap.get(playerId);
         if (list == null) return false;
@@ -94,15 +105,13 @@ public class QuestManager {
         }
         return true;
     }
-
+    // Save to file
     private static void saveToFile() {
         for (UUID uuid : activeQuests.keySet()) {
             Quest quest = activeQuests.get(uuid);
             String base = uuid.toString();
-
             data.set(base + ".title", quest.getTitle());
             data.set(base + ".description", quest.getDescription());
-
             List<Map<String, Object>> serializedObjectives = new ArrayList<>();
             for (Objective obj : quest.getObjectives()) {
                 Map<String, Object> map = new HashMap<>();
@@ -112,7 +121,6 @@ public class QuestManager {
                 serializedObjectives.add(map);
             }
             data.set(base + ".objectives", serializedObjectives);
-
             List<ObjectiveProgress> progressList = progressMap.get(uuid);
             List<Map<String, Object>> serializedProgress = new ArrayList<>();
             if (progressList != null) {
@@ -127,14 +135,13 @@ public class QuestManager {
             }
             data.set(base + ".progress", serializedProgress);
         }
-
         try {
             data.save(file);
         } catch (IOException e) {
             Bukkit.getLogger().warning("⚠ Could not save quests.yml");
         }
     }
-
+    // Load from file
     private static void loadFromFile() {
         activeQuests.clear();
         progressMap.clear();
@@ -144,7 +151,6 @@ public class QuestManager {
                 UUID uuid = UUID.fromString(uuidString);
                 String title = data.getString(uuidString + ".title");
                 String description = data.getString(uuidString + ".description");
-
                 List<Objective> objectives = new ArrayList<>();
                 List<?> objList = data.getList(uuidString + ".objectives");
                 if (objList != null) {
@@ -158,9 +164,7 @@ public class QuestManager {
                         }
                     }
                 }
-
                 activeQuests.put(uuid, new Quest(title, description, objectives));
-
                 List<ObjectiveProgress> progressList = new ArrayList<>();
                 List<?> progList = data.getList(uuidString + ".progress");
                 if (progList != null) {
@@ -177,9 +181,7 @@ public class QuestManager {
                         }
                     }
                 }
-
                 progressMap.put(uuid, progressList);
-
             } catch (Exception e) {
                 Bukkit.getLogger().warning("⚠ Failed to load quest for UUID " + uuidString);
             }

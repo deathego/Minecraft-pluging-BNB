@@ -6,18 +6,21 @@ public class MinecraftQuestPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Initialize QuestManager
-        QuestManager.setup(getDataFolder());
+    // Initialize QuestManager
+    QuestManager.setup(getDataFolder());
 
-        // Register commands
-        this.getCommand("quest").setExecutor(new QuestCommand());
-        this.getCommand("completequest").setExecutor(new CompleteQuestCommand());
+    // ✅ Initialize BossBarManager with plugin instance
+    BossBarManager.init(this);
 
-        // Register event listeners
-        getServer().getPluginManager().registerEvents(new QuestEventListener(), this);
+    // Register commands
+    this.getCommand("quest").setExecutor(new QuestCommand());
+    this.getCommand("completequest").setExecutor(new CompleteQuestCommand());
 
-        getLogger().info("✅ Minecraft Quest Plugin Enabled!");
-    }
+    // Register event listeners
+    getServer().getPluginManager().registerEvents(new QuestEventListener(), this);
+
+    getLogger().info("✅ Minecraft Quest Plugin Enabled!");
+}
 
     @Override
     public void onDisable() {

@@ -92,6 +92,8 @@ public class QuestCommand implements CommandExecutor {
 
                     // ✅ Initialize objective progress
                     QuestManager.initializeProgress(player.getUniqueId(), objectives);
+                    // Add this line to show timer UI
+                    BossBarManager.showQuestTimer(player, 900); // 15 minutes
                 });
             } catch (Exception e) {
                 e.printStackTrace();
