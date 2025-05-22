@@ -3,6 +3,7 @@ package com.questengine;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.core5.http.ContentType;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,11 +29,11 @@ public class QuestCommand implements CommandExecutor {
 
         // Check if player already has an active quest
         if (QuestManager.hasActiveQuest(player.getUniqueId())) {
-            player.sendMessage("§cYou already have an active quest! Complete it before taking a new one.");
+            player.sendMessage(ChatColor.RED + "You already have an active quest! Complete it before taking a new one.");
             return true;
         }
 
-        player.sendMessage("§eGenerating a new quest...");
+        player.sendMessage(ChatColor.YELLOW + "Generating a new quest...");
         Logger logger = Bukkit.getLogger();
 
         Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getProvidingPlugin(getClass()), () -> {
@@ -55,7 +56,7 @@ public class QuestCommand implements CommandExecutor {
                 if (!(objectiveObj instanceof JSONArray)) {
                     logger.warning("Objective is not an array: " + objectiveObj);
                     Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () ->
-                            player.sendMessage("§cFailed to parse quest objectives.")
+                            player.sendMessage(ChatColor.RED + "Failed to parse quest objectives.")
                     );
                     return;
                 }
@@ -64,8 +65,9 @@ public class QuestCommand implements CommandExecutor {
                 List<Objective> objectives = new java.util.ArrayList<>();
 
                 StringBuilder message = new StringBuilder();
-                message.append("§aQuest: §f").append(title).append("\n");
-                message.append("§7").append(description).append("\n§bObjectives:\n");
+                message.append(ChatColor.GREEN).append("Quest: ").append(ChatColor.WHITE).append(title).append("\n");
+                message.append(ChatColor.GRAY).append(description).append("\n");
+                message.append(ChatColor.AQUA).append("Objectives:\n");
 
                 for (Object obj : objectiveArray) {
                     JSONObject o = (JSONObject) obj;
@@ -74,28 +76,36 @@ public class QuestCommand implements CommandExecutor {
                     int amount = ((Long) o.get("amount")).intValue();
 
                     objectives.add(new Objective(type, item, amount));
-                    message.append(" - ").append(type).append(" ").append(amount).append(" ").append(item).append("\n");
+
+                    message.append(ChatColor.GOLD).append(" - ")
+                           .append(capitalize(type)).append(" ")
+                           .append(amount).append(" ").append(item).append("\n");
                 }
 
                 Quest fullQuest = new Quest(title, description, objectives);
 
-Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
-    player.sendMessage(message.toString());
+                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
+                    player.sendMessage(message.toString());
 
-    // ✅ Save the full quest object
-    QuestManager.setQuest(player.getUniqueId(), fullQuest);
+                    // ✅ Save the full quest object
+                    QuestManager.setQuest(player.getUniqueId(), fullQuest);
 
-    // ✅ Initialize objective progress
-    QuestManager.initializeProgress(player.getUniqueId(), objectives);
-});
+                    // ✅ Initialize objective progress
+                    QuestManager.initializeProgress(player.getUniqueId(), objectives);
+                });
             } catch (Exception e) {
                 e.printStackTrace();
                 Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () ->
-                        player.sendMessage("§cFailed to fetch quest from backend.")
+                        player.sendMessage(ChatColor.RED + "Failed to fetch quest from backend.")
                 );
             }
         });
 
         return true;
+    }
+
+    private String capitalize(String word) {
+        if (word == null || word.isEmpty()) return word;
+        return word.substring(0, 1).toUpperCase() + word.substring(1);
     }
 }
