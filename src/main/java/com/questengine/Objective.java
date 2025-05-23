@@ -14,7 +14,7 @@ public class Objective {
     }
 
     public String getType() { return type; }
-    public String getItem() { return item; } // Corrected
+    public String getItem() { return item; } 
     public int getAmount() { return amount; }
     public int getProgress() { return progress; }
 
@@ -28,7 +28,7 @@ public class Objective {
         return progress >= amount;
     }
 
-    // ✅ Fixed this method to use getItem() instead of getTarget()
+   
     public boolean matches(String actionType, String target) {
         return this.getType().equalsIgnoreCase(actionType) &&
                this.getItem().equalsIgnoreCase(target);

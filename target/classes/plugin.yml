@@ -9,7 +9,9 @@ commands:
   quest:
     description: Starts or manages quests.
     usage: /quest
-
   completequest:
     description: Mark quest as completed
     usage: /completequest
+  linkwallet:
+    description: Link your crypto wallet address
+    usage: /linkwallet <your_wallet_address>

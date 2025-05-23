@@ -1,11 +1,13 @@
 package com.questengine;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import com.questengine.MinecraftQuestPlugin;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 public class QuestManager {
     private static final Map<UUID, BossBar> activeBossBars = new ConcurrentHashMap<>();
@@ -13,11 +15,14 @@ public class QuestManager {
     private static final Map<UUID, List<ObjectiveProgress>> progressMap = new HashMap<>();
     private static File file;
     private static YamlConfiguration data;
+    private static File walletFile;
+    private static YamlConfiguration walletData;
     // Setup file and load existing data
     public static void setup(File dataFolder) {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
+        // quests.yml
         file = new File(dataFolder, "quests.yml");
         if (!file.exists()) {
             try {
@@ -27,20 +32,29 @@ public class QuestManager {
             }
         }
         data = YamlConfiguration.loadConfiguration(file);
-        loadFromFile();
+        // wallets.yml
+        walletFile = new File(dataFolder, "wallets.yml");
+        if (!walletFile.exists()) {
+            try {
+                walletFile.createNewFile();
+            } catch (IOException e) {
+                Bukkit.getLogger().warning("⚠ Could not create wallets.yml");
+            }
+        }
+        walletData = YamlConfiguration.loadConfiguration(walletFile);
+        loadFromFile(); // load quests only
     }
     // Assign quest to player
     public static void setQuest(UUID playerId, Quest quest) {
-    // Remove existing boss bar if any
-    BossBar oldBar = activeBossBars.remove(playerId);
-    if (oldBar != null) {
-        Player player = Bukkit.getPlayer(playerId);
-        if (player != null) oldBar.removeAll();
+        BossBar oldBar = activeBossBars.remove(playerId);
+        if (oldBar != null) {
+            Player player = Bukkit.getPlayer(playerId);
+            if (player != null) oldBar.removeAll();
+        }
+        activeQuests.put(playerId, quest);
+        initializeProgress(playerId, quest.getObjectives());
+        saveToFile();
     }
-    activeQuests.put(playerId, quest);
-    initializeProgress(playerId, quest.getObjectives());
-    saveToFile();
-}
     // Retrieve active quest
     public static Quest getQuest(UUID playerId) {
         return activeQuests.get(playerId);
@@ -52,22 +66,50 @@ public class QuestManager {
     public static boolean hasActiveQuest(UUID playerId) {
         return activeQuests.containsKey(playerId);
     }
-    // Complete quest
+    // Complete quest and mint SBT
     public static void completeQuest(UUID playerId) {
-    // Remove boss bar if it exists
-    BossBar bossBar = activeBossBars.remove(playerId);
-    if (bossBar != null) {
+        BossBar bossBar = activeBossBars.remove(playerId);
+        if (bossBar != null) {
+            Player player = Bukkit.getPlayer(playerId);
+            if (player != null) bossBar.removeAll();
+        }
+        Quest quest = activeQuests.get(playerId);
+        activeQuests.remove(playerId);
+        progressMap.remove(playerId);
+        data.set(playerId.toString(), null);
+        saveToFile();
         Player player = Bukkit.getPlayer(playerId);
         if (player != null) {
-            bossBar.removeAll();
+            Bukkit.getScheduler().runTaskAsynchronously(
+                MinecraftQuestPlugin.getInstance()
+,
+                () -> {
+                    try {
+                        URL url = new URL("http://localhost:3000/api/mint");
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        conn.setDoOutput(true);
+
+                        String jsonInput = String.format(
+  "{\"playerWallet\": \"%s\", \"tokenURI\": \"%s\"}",
+  getWalletAddress(player.getUniqueId()),
+  "ipfs://QmPxjDzsomWo5BrsuCAnsofgtd4bgX1XngKbbkgHdnmVBM"
+);
+                        try (OutputStream os = conn.getOutputStream()) {
+                            byte[] input = jsonInput.getBytes("utf-8");
+                            os.write(input, 0, input.length);
+                        }
+
+                        int code = conn.getResponseCode();
+                        Bukkit.getLogger().info("🧠 SBT Minting HTTP Status: " + code);
+                    } catch (Exception e) {
+                        Bukkit.getLogger().warning("⚠ Failed to mint SBT: " + e.getMessage());
+                    }
+                }
+            );
         }
     }
-    // Remove quest and progress
-    activeQuests.remove(playerId);
-    progressMap.remove(playerId);
-    data.set(playerId.toString(), null);
-    saveToFile();
-}
     // Initialize progress
     public static void initializeProgress(UUID playerId, List<Objective> objectives) {
         List<ObjectiveProgress> progressList = new ArrayList<>();
@@ -76,11 +118,9 @@ public class QuestManager {
         }
         progressMap.put(playerId, progressList);
     }
-    // Get player progress
     public static List<ObjectiveProgress> getProgress(UUID playerId) {
         return progressMap.getOrDefault(playerId, new ArrayList<>());
     }
-    // Increment progress
     public static void incrementProgress(UUID playerId, String type, String item) {
         List<ObjectiveProgress> list = progressMap.get(playerId);
         if (list == null) return;
@@ -94,7 +134,6 @@ public class QuestManager {
         }
         saveToFile();
     }
-    // Check completion
     public static boolean isQuestComplete(UUID playerId) {
         List<ObjectiveProgress> list = progressMap.get(playerId);
         if (list == null) return false;
@@ -105,13 +144,13 @@ public class QuestManager {
         }
         return true;
     }
-    // Save to file
     private static void saveToFile() {
         for (UUID uuid : activeQuests.keySet()) {
             Quest quest = activeQuests.get(uuid);
             String base = uuid.toString();
             data.set(base + ".title", quest.getTitle());
             data.set(base + ".description", quest.getDescription());
+
             List<Map<String, Object>> serializedObjectives = new ArrayList<>();
             for (Objective obj : quest.getObjectives()) {
                 Map<String, Object> map = new HashMap<>();
@@ -141,16 +180,15 @@ public class QuestManager {
             Bukkit.getLogger().warning("⚠ Could not save quests.yml");
         }
     }
-    // Load from file
     private static void loadFromFile() {
         activeQuests.clear();
         progressMap.clear();
-
         for (String uuidString : data.getKeys(false)) {
             try {
                 UUID uuid = UUID.fromString(uuidString);
                 String title = data.getString(uuidString + ".title");
                 String description = data.getString(uuidString + ".description");
+
                 List<Objective> objectives = new ArrayList<>();
                 List<?> objList = data.getList(uuidString + ".objectives");
                 if (objList != null) {
@@ -185,6 +223,17 @@ public class QuestManager {
             } catch (Exception e) {
                 Bukkit.getLogger().warning("⚠ Failed to load quest for UUID " + uuidString);
             }
+        }
+    }
+    public static String getWalletAddress(UUID uuid) {
+        return walletData.getString(uuid.toString(), "0x0000000000000000000000000000000000000000");
+    }
+    public static void setWalletAddress(UUID uuid, String address) {
+        walletData.set(uuid.toString(), address);
+        try {
+            walletData.save(walletFile);
+        } catch (IOException e) {
+            Bukkit.getLogger().warning("⚠ Could not save wallet address for " + uuid);
         }
     }
 }

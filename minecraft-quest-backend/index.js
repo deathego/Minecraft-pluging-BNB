@@ -3,8 +3,15 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const app = express();
+const { ethers } = require('ethers');
+const questAbi = require('./abi/QuestBadge.json').abi;
+const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const questBadgeContract = new ethers.Contract(process.env.CONTRACT_ADDRESS, questAbi, wallet);
+const mintRoute = require('./routes/mint');
 app.use(cors());
 app.use(express.json());
+app.use('/api', mintRoute);
 const PORT = process.env.PORT || 3000;
 // Test route
 app.get('/', (req, res) => {
@@ -34,7 +41,7 @@ Example:
   ]
 }
 
-Now generate a creative Real In-Game Minecraft quest [kill 2 zombie and 2 skeleton].
+Now generate a creative Real In-Game Minecraft quest [kill 5 Sheep].
 `;
 
     const response = await axios.post(
@@ -77,13 +84,23 @@ try {
 });
 
 // POST /submit-quest
-app.post('/submit-quest', (req, res) => {
-  const { playerName, questTitle, completedAt } = req.body;
+app.post('/submit-quest', async (req, res) => {
+  console.log("Received quest submission:", req.body);
+  const { playerName, playerWallet, questTitle, completedAt } = req.body;
 
   console.log(`[✔] ${playerName} completed '${questTitle}' at ${completedAt}`);
 
-  // You can save this to a database later
-  res.status(200).json({ message: "Quest completion recorded." });
+  const tokenURI = `ipfs://QmeAGMC6eX4MVgZUma5A26xRGRvB2pDrznKeUHLbTK9ckV`; // You can later dynamically assign this
+
+  try {
+    const tx = await questBadgeContract.mintBadge(playerWallet, tokenURI);
+    await tx.wait();
+
+    res.status(200).json({ message: "Quest completion recorded and SBT minted!", txHash: tx.hash });
+  } catch (err) {
+    console.error("Minting failed:", err);
+    res.status(500).json({ error: "Minting failed", details: err.message });
+  }
 });
 
 app.listen(PORT, () => {
