@@ -8,7 +8,7 @@ app.set("views", path.join(__dirname, "views"));
 // app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
 
-// Serve static files
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
@@ -27,7 +27,7 @@ app.get('/login', (req, res) => {
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
-  // For demo: Accept all credentials
+  
   console.log(`Login request from ${username}`);
   res.redirect('/wallet');
 });

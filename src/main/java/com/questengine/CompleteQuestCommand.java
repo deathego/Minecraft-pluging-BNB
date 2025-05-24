@@ -21,7 +21,7 @@ public class CompleteQuestCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        // 🔒 Check if the player has an active quest
+        
         if (!QuestManager.hasActiveQuest(player.getUniqueId())) {
             player.sendMessage("§cYou don't have any active quest to complete.");
             return true;
@@ -42,7 +42,7 @@ public class CompleteQuestCommand implements CommandExecutor {
                         .execute()
                         .discardContent();
 
-                // ✅ Clear the quest after successful submission
+                
                 QuestManager.completeQuest(player.getUniqueId());
 
                 player.sendMessage("§aQuest marked as completed and sent to server!");

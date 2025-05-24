@@ -22,7 +22,7 @@ public class BossBarManager {
     public static void showQuestTimer(Player player, int totalSeconds) {
     UUID uuid = player.getUniqueId();
 
-    // Clean up old bar and task if any
+    
     removeBar(player);
 
     BossBar bar = Bukkit.createBossBar("⚔ " + player.getName() + " - Time left: 15:00", BarColor.BLUE, BarStyle.SEGMENTED_12);

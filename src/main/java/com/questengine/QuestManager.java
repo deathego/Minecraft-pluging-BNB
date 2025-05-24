@@ -17,12 +17,12 @@ public class QuestManager {
     private static YamlConfiguration data;
     private static File walletFile;
     private static YamlConfiguration walletData;
-    // Setup file and load existing data
+
     public static void setup(File dataFolder) {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        // quests.yml
+
         file = new File(dataFolder, "quests.yml");
         if (!file.exists()) {
             try {
@@ -32,7 +32,7 @@ public class QuestManager {
             }
         }
         data = YamlConfiguration.loadConfiguration(file);
-        // wallets.yml
+
         walletFile = new File(dataFolder, "wallets.yml");
         if (!walletFile.exists()) {
             try {
@@ -44,7 +44,7 @@ public class QuestManager {
         walletData = YamlConfiguration.loadConfiguration(walletFile);
         loadFromFile(); // load quests only
     }
-    // Assign quest to player
+
     public static void setQuest(UUID playerId, Quest quest) {
         BossBar oldBar = activeBossBars.remove(playerId);
         if (oldBar != null) {
@@ -55,7 +55,7 @@ public class QuestManager {
         initializeProgress(playerId, quest.getObjectives());
         saveToFile();
     }
-    // Retrieve active quest
+
     public static Quest getQuest(UUID playerId) {
         return activeQuests.get(playerId);
     }
@@ -66,7 +66,7 @@ public class QuestManager {
     public static boolean hasActiveQuest(UUID playerId) {
         return activeQuests.containsKey(playerId);
     }
-    // Complete quest and mint SBT
+
     public static void completeQuest(UUID playerId) {
         BossBar bossBar = activeBossBars.remove(playerId);
         if (bossBar != null) {
@@ -110,7 +110,7 @@ public class QuestManager {
             );
         }
     }
-    // Initialize progress
+
     public static void initializeProgress(UUID playerId, List<Objective> objectives) {
         List<ObjectiveProgress> progressList = new ArrayList<>();
         for (Objective obj : objectives) {

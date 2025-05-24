@@ -3,7 +3,7 @@ const router = express.Router();
 const { ethers } = require('ethers');
 const questAbi = require('../abi/QuestBadge.json').abi;
 
-// Ethers v5 way to create provider and contract:
+
 const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, questAbi, wallet);

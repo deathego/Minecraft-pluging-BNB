@@ -27,7 +27,7 @@ public class QuestCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        // Check if player already has an active quest
+        
         if (QuestManager.hasActiveQuest(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + "You already have an active quest! Complete it before taking a new one.");
             return true;
@@ -87,13 +87,13 @@ public class QuestCommand implements CommandExecutor {
                 Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(getClass()), () -> {
                     player.sendMessage(message.toString());
 
-                    // ✅ Save the full quest object
+                    
                     QuestManager.setQuest(player.getUniqueId(), fullQuest);
 
-                    // ✅ Initialize objective progress
+                    
                     QuestManager.initializeProgress(player.getUniqueId(), objectives);
-                    // Add this line to show timer UI
-                    BossBarManager.showQuestTimer(player, 900); // 15 minutes
+                    
+                    BossBarManager.showQuestTimer(player, 900); 
                 });
             } catch (Exception e) {
                 e.printStackTrace();
