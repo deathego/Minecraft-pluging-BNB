@@ -1065,8 +1065,8 @@
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#stats">Stats</a></li>
                 <li><a href="#server-info">Join Server</a></li>
-                <li><a href="wallet.ejs">My Wallet</a></li>
-                <li><a href="leaderboard.ejs">Leaderboard</a></li>
+                <li><a href="/wallet">My Wallet</a></li>
+                <li><a href="/leaderboard">Leaderboard</a></li>
             </ul>
             <div class="mobile-menu" onclick="toggleMobileMenu()">☰ MENU</div>
             <a href="#server-info" class="join-btn">🎮 Play Now</a>
@@ -1075,8 +1075,8 @@
                 <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
                 <a href="#stats" onclick="closeMobileMenu()">Stats</a>
                 <a href="#server-info" onclick="closeMobileMenu()">Join Server</a>
-                <a href="wallet.ejs" onclick="closeMobileMenu()">My Wallet</a>
-                <a href="leaderboard.ejs" onclick="closeMobileMenu()">Leaderboard</a>
+                <a href="/wallet" onclick="closeMobileMenu()">My Wallet</a>
+                <a href="/leaderboard" onclick="closeMobileMenu()">Leaderboard</a>
             </div>
         </nav>
     </header>
@@ -1109,19 +1109,19 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <h3 class="counter" data-target="2847">0</h3>
+                    <h3 class="counter" data-target="1">0</h3>
                     <p>Active Players</p>
                 </div>
                 <div class="stat-item">
-                    <h3 class="counter" data-target="15623">0</h3>
+                    <h3 class="counter" data-target="4">0</h3>
                     <p>Quests Completed</p>
                 </div>
                 <div class="stat-item">
-                    <h3 class="counter" data-target="8934">0</h3>
+                    <h3 class="counter" data-target="4">0</h3>
                     <p>NFTs Minted</p>
                 </div>
                 <div class="stat-item">
-                    <h3 class="counter" data-target="156">0</h3>
+                    <h3 class="counter" data-target="0">0</h3>
                     <p>Daily Rewards</p>
                 </div>
             </div>
@@ -1277,7 +1277,7 @@
                     <p>
                         <a href="#">Discord Server</a><br>
                         <a href="#">Player Forums</a><br>
-                        <a href="leaderboard.ejs">Leaderboard</a><br>
+                        <a href="/leaderboard">Leaderboard</a><br>
                         <a href="#">Bug Reports</a><br>
                         <a href="#">Feature Requests</a>
                     </p>
@@ -1569,7 +1569,7 @@
             
             if (playerCount && serverStatus && serverPing) {
                 // Simulate realistic player count (200-500)
-                const players = Math.floor(Math.random() * 300) + 200;
+                const players = Math.floor(Math.random() * 1) + 1;
                 playerCount.textContent = `${players}/500`;
                 
                 // Simulate server status (99% uptime)

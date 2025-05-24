@@ -18,7 +18,6 @@ app.get("/", (req, res) => {
 const leaderboard = [
   { username: 'Steve', questsCompleted: 5 },
   { username: 'Alex', questsCompleted: 3 },
-  { username: 'EnderGuy', questsCompleted: 2 },
 ];
 
 app.get('/login', (req, res) => {
