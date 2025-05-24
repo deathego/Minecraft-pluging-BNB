@@ -94,7 +94,7 @@ public class QuestManager {
                         String jsonInput = String.format(
   "{\"playerWallet\": \"%s\", \"tokenURI\": \"%s\"}",
   getWalletAddress(player.getUniqueId()),
-  "ipfs://QmR4oy5sHaaDEBfbdbc46GBZaTZVGesPckggdnxpTbxZWc"
+  "ipfs://QmYXDrLGfHggb7eNyozYV2C2eZfgtHbNuDdEqdQh5StXaj"
 );
                         try (OutputStream os = conn.getOutputStream()) {
                             byte[] input = jsonInput.getBytes("utf-8");
