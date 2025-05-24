@@ -56,8 +56,8 @@ async function main() {
 
     // Prepare metadata JSON with updated IPFS image link
     const metadata = {
-      name: "Creeper Crusher",
-      description: "Awarded for defeating 5 creepers",
+      name: "Pork Chop Pursuit",
+      description: "Awarded for slaying your first pig",
       image: `ipfs://${imageHash}`
     };
 

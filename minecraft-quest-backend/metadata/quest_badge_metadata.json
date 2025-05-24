@@ -1,5 +1,5 @@
 {
-  "name": "Creeper Crusher",
-  "description": "Awarded for defeating 5 creepers",
-  "image": "ipfs://QmExampleCreeperImageCID"
+  "name": "Pork Chop Pursuit",
+  "description": "Awarded for slaying your first pig",
+  "image": "ipfs://QmExamplePigImageCID"
 }
