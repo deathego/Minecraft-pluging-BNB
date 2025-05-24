@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quest Leaderboard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <section class="leaderboard">
+    <h2>Top Quest Hunters</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Completed Quests</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% leaderboard.forEach((player, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= player.username %></td>
+            <td><%= player.questsCompleted %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

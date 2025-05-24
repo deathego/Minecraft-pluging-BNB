@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Wallet & NFTs</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+<body>
+  <section class="wallet-section">
+    <h2>Connect Wallet to View Your NFT Badges</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <div id="walletAddress"></div>
+    <div id="nftsContainer"></div>
+  </section>
+
+  <script>
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        document.getElementById('walletAddress').innerText = `Wallet: ${accounts[0]}`;
+        
+        // Fetch NFTs from backend
+        const res = await fetch(`/api/nfts?wallet=${accounts[0]}`);
+        const nfts = await res.json();
+
+        const container = document.getElementById('nftsContainer');
+        container.innerHTML = nfts.map(nft => `
+          <div class="nft-card">
+            <img src="${nft.image}" alt="NFT Image" />
+            <p>${nft.name}</p>
+          </div>
+        `).join('');
+      } else {
+        alert("MetaMask not found");
+      }
+    }
+  </script>
+</body>
+</html>
