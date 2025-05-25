@@ -67,6 +67,7 @@ public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
         UUID playerId = player.getUniqueId();
         if (QuestManager.isQuestComplete(playerId)) {
             player.sendMessage(ChatColor.GOLD + "🎉 Quest complete! Great job.");
+            player.sendMessage(ChatColor.GOLD + "💸 Succesfully Recieved +$1000");
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
             player.spawnParticle(Particle.HEART, player.getLocation(), 30);
             QuestManager.completeQuest(playerId);
