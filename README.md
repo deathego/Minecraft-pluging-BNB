@@ -112,16 +112,6 @@ QuestCraft is just the beginning. We’re looking to expand the functionality to
 
 ---
 
-## **Contribute**
-
-We’d love for you to contribute! Whether you’re a developer, designer, or Minecraft enthusiast, you can help us make QuestCraft even better.
-
-* Fork the repository.
-* Create a branch for your feature or fix.
-* Submit a pull request with a detailed description of your changes.
-
----
-
 ## **License**
 
 QuestCraft is licensed under the **MIT License**.
@@ -130,12 +120,7 @@ QuestCraft is licensed under the **MIT License**.
 
 ## **Contact**
 
-Have any questions or need support? Reach out to us on our [Discord server](https://discord.gg/yourdiscordlink) or via email at [support@questcraft.com](mailto:support@questcraft.com).
-
----
-
-## **Links**
-
+* Email at [noumanpm@gmail.com](mailto:noumanpm@gmail.com).
 * GitHub Repository: [QuestCraft GitHub](https://github.com/Nouman-wp/Minecraft-pluging-BNB)
 * LinkedIn: [Linkedin Link](https://www.linkedin.com/in/mujeeb-nouman-31330a282/)
 
