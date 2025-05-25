@@ -41,7 +41,7 @@ Example:
   ]
 }
 
-Now generate a creative Real In-Game Minecraft quest [kill 5 pig].
+Now generate a creative Real In-Game Minecraft quest [kill 1 enderman].
 `;
 
     const response = await axios.post(
@@ -90,7 +90,7 @@ app.post('/submit-quest', async (req, res) => {
 
   console.log(`[✔] ${playerName} completed '${questTitle}' at ${completedAt}`);
 
-  const tokenURI = `ipfs://QmRzSa3gwXTA8dLnyfZDK32aVtEjthpyvDKc8PGg2xEc75`; // You can later dynamically assign this
+  const tokenURI = `ipfs://Qma3CL3McKuGFVD6hooov9AYhqbSnYWzUaziRhr5scGjGA`; // You can later dynamically assign this
 
   try {
     const tx = await questBadgeContract.mintBadge(playerWallet, tokenURI);

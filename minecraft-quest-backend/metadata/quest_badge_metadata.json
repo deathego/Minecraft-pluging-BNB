@@ -1,5 +1,5 @@
 {
-  "name": "Pork Chop Pursuit",
-  "description": "Awarded for slaying your first pig",
-  "image": "ipfs://QmExamplePigImageCID"
+  "name": "Ender Hunter",
+  "description": "Awarded for defeating your first Enderman",
+  "image": "ipfs://QmExampleEndermanImageCID"
 }
