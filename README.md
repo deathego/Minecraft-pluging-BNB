@@ -1,8 +1,4 @@
-Creating a comprehensive and engaging README file for your *QuestCraft* project is crucial for both developers and players who are interested in contributing or testing out your server. Below is a suggested layout for the README, which includes sections for project description, setup instructions, features, and additional resources like images, videos, and links.
-
----
-
-# QuestCraft: Minecraft + Crypto = The Future of Gaming
+# QuestCraft: Play to Earn Rewards and Real Money 
 
 Welcome to **QuestCraft**, the ultimate Minecraft server that combines **blockchain technology** with the iconic Minecraft experience! Imagine playing Minecraft, completing quests, and earning **real crypto rewards** that are stored securely in your crypto wallet. Whether you're a Minecraft enthusiast or a crypto newbie, QuestCraft offers a fun, exciting, and meaningful way to interact with both worlds.
 
@@ -146,4 +142,3 @@ Have any questions or need support? Reach out to us on our [Discord server](http
 
 ---
 
-This template provides a solid foundation for your project’s README file. For the images and demo video, you can replace the placeholders with actual links once you have your content ready.
