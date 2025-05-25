@@ -137,8 +137,8 @@ Have any questions or need support? Reach out to us on our [Discord server](http
 ## **Links**
 
 * GitHub Repository: [QuestCraft GitHub](https://github.com/Nouman-wp/Minecraft-pluging-BNB)
-* Website: [QuestCraft Official Site](https://www.questcraft.com)
-* Join the Community: [Discord](https://discord.gg/yourdiscordlink)
+* LinkedIn: [Linkedin Link](https://www.linkedin.com/in/mujeeb-nouman-31330a282/)
+
 
 ---
 
