@@ -96,13 +96,13 @@ Check out our demo video to see QuestCraft in action!
 
 Below are some images of QuestCraft in action:
 
-### 1. Quest Activation Screen
+### 1. Plugin Workflow
 
-![Quest Activation](https://example.com/quest-activation-image.jpg)
+![Plugin Workflow](https://ik.imagekit.io/cf8zqioncl/Screenshot%202025-05-25%20082358.png?updatedAt=1748141700136)
 
 ### 2. Reward Screen with Crypto Token
 
-![Reward Screen](https://example.com/reward-screen-image.jpg)
+![Reward Screen](https://ik.imagekit.io/cf8zqioncl/reward%20bnb?updatedAt=1748141540332)
 
 ---
 
