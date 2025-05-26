@@ -88,7 +88,7 @@ These rewards are **soulbound** to your Minecraft account, making them an authen
 
 Check out our demo video to see QuestCraft in action!
 
-[![QuestCraft Demo Video](https://img.youtube.com/vi/your_video_id/0.jpg)](https://www.youtube.com/watch?v=your_video_id)
+[![QuestCraft Demo Video](https://youtu.be/g5ftqrFtX5Y)](https://youtu.be/g5ftqrFtX5Y)
 
 ---
 
